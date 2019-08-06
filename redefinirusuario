@@ -1,0 +1,38 @@
+﻿#!/bin/bash
+read -p "Nome do usuário: " name
+ if cat /etc/passwd |grep $name: > /dev/null
+ then
+ echo " "
+ else
+ clear
+ echo "O usuário $name não existe"
+ exit
+ fi
+clear
+echo -e "\033[1;33mOpções a modificar?\033[1;30m
+1) Número de Conecções
+2) Data em que expira
+3) Mudar senha de usuário"
+read -p "opção: " option
+if [ $option -eq 1 ]; then
+read -p "Qual o novo limite de logins: " liml
+limite $name $liml
+exit 0
+fi
+
+if [ $option -eq 2 ]; then
+echo "Qual a nova data: formato AAAA/MM/DD"
+read -p ": " date
+chage -E $date $name 2> /dev/null
+echo -e "\033[1;31mO usuário $name termina no dia: $date\033[0m"
+exit
+fi
+if [ $option -eq 3 ]
+then
+read -p "Qual a nova password para $name: " pass
+(echo "$pass" ; echo "$pass" ) |passwd $name > /dev/null 2>/dev/null
+echo "$pass" > /etc/VpsPackdir/senha/$name
+echo "Nova password ativada: $pass"
+exit
+fi
+

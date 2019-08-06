@@ -1,0 +1,31 @@
+﻿#!/bin/bash
+echo -e "\033[1;33mHosts\033[1;30m
+1) Adicionar hosts
+2) Eliminar hosts"
+read -p "opção: " option
+if [ $option -eq 1 ]; then
+echo '#!/bin/bash
+echo -e "\033[1;31mHosts atualmente permitidos\n\n\033[1;32m$(cat /etc/payloads)\n\033[0m"
+echo "¿Que host queres adicionar?"
+read -p ": " host
+echo "$host" >> /etc/payloads
+squid -k reconfigure > /dev/null 2> /dev/null
+squid3 -k reconfigure > /dev/null 2> /dev/null
+echo "$host Adicionado" ' > /bin/addhost
+chmod a+x /bin/addhost
+exit 0
+fi
+if [ $option -eq 2 ]; then
+echo '#!/bin/bash
+echo -e "\033[1;31mHosts atualmente permitidos\n\n\033[1;32m$(cat /etc/payloads)\n\033[0m"
+echo -e "\033[1;37m¿Que host desejas eliminar?: \033[0m"
+read host
+hosts = $(cat /etc/payloads |grep -v $host)
+echo "$hosts" > /etc/payloads
+squid -k reconfigure >/dev/null 2>/dev/null
+squid3 -k reconfigure >/dev/null 2>/dev/null
+echo -e "\n\033[1;32mHost Eliminado\033[0m"
+' > /bin/removerhost
+exit
+fi
+

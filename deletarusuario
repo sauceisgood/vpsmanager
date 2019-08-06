@@ -1,0 +1,43 @@
+#!/bin/bash
+clear
+echo -e "\033[1;33mOpções:\033[1;30m
+1) Eliminar usuário
+2) Eliminar e desconectar todos os usuários
+3) desconectar todos os usuários\033[0m"
+read -p ": " option
+ if [ $option -eq 1 ]; then
+ read -p "Qual o nome do usuário: " name
+ if [ $(cat /etc/passwd |grep "^$name:" |wc -l) -eq 0 ]; then
+ echo "O usuário não existe"
+ exit
+ fi
+ userdel --force $name > /dev/null 2>/dev/null
+ echo "O usuário $name foi eliminado"
+ exit
+ fi
+
+ if [ $option -eq 2 ]; then
+ read -p "Qual o nome do usuário: " name
+ if [ $(cat /etc/passwd |grep "^$name:" |wc -l) -eq 0 ]; then
+ echo "O usuário não existe"
+ exit
+ fi
+ pids=$(ps -u $name |awk {'print $1'})
+ kill "$pids" >/dev/null 2>/dev/null
+ userdel $name 1>/dev/null 2>/dev/null
+ echo "O usuário $name foi desconectado e eliminado"
+ exit
+ fi
+
+ if [ $option -eq 3 ]; then
+ read -p "Qual o nome do usuário: " name
+ if [ $(cat /etc/passwd |grep "^$name:" |wc -l) -eq 0 ]; then
+ echo "O usuário não existe"
+ exit
+ fi
+ pids=$(ps -u $name |awk {'print $1'})
+ kill "$pids" >/dev/null 2>/dev/null
+ echo "O usuário $name foi desconectado"
+ exit
+ fi
+
