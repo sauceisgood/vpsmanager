@@ -1,5 +1,4 @@
 #!/bin/bash
-cd
 if [ $(id -u) != 0 ]
 then
 echo "Execute como root"
